@@ -1,6 +1,7 @@
 const request = require('request');
 const constraints = require('./Configurations/constraints');
 const is_formatted_url = require('./Utlities/utils');
+let concurrency = require('./Utlities/concurrent_engine')
 const _ = require('lodash/core');
 const cheerio = require('cheerio');
 const URL = require('url-parse');
@@ -8,27 +9,44 @@ const fs = require('fs');
 
 const HYPERLINKS_HARVESTED = {};
 const POSSIBLE_HYPERLINKS = [];
-const url = new URL(constraints.PROBLEM_URL);
+// const url = new URL(constraints.PROBLEM_URL);
 
-console.log(is_formatted_url);
-if ( is_formatted_url === true ) {
-    root_url_value = url => {
-        `{$url.protocol}"//"{$url.hostname}`   // "https://medium.com"
-    };
+// console.log(is_formatted_url);
+// if ( is_formatted_url === true ) {
+//     root_url_value = url => {
+//         `{$url.protocol}"//"{$url.hostname}`   // "https://medium.com"
+//     };
 
-} else console.log(`Error ${root_url_value} is not an URL`);
+// } else console.log(`Error ${root_url_value} is not an URL`);
 
-let count_of_already_visited_links = 0;
+// let count_of_already_visited_links = 0;
 
-POSSIBLE_HYPERLINKS.unshift(constraints.PROBLEM_URL);
+// POSSIBLE_HYPERLINKS.unshift(constraints.PROBLEM_URL);
 
-complete_unique_list();
+// complete_unique_list();
+
+function hello(name) {
+    for (var i=0; i<20; i++){
+        console.log(`Hello ${name}`);
+    }
+}
+
+concurrent_engine = new concurrency.ConcurrentEngine("new_engine_for_url_task")
+console.log("adding tasks!")
+concurrent_engine.addTask("hello", hello, "sid");
+concurrent_engine.addTask("hello", hello, "ayush");
+concurrent_engine.addTask("hello", hello, "aman");
+concurrent_engine.addTask("hello", hello, "anamika");
+concurrent_engine.addTask("hello", hello, "parth");
+concurrent_engine.addTask("hello", hello, "cc");
+concurrent_engine.start()
+return 
 
 function complete_unique_list() {
-    if (count_of_already_visited_links >= constraints.CONCURRENT_REQUESTS) {
-        console.log("Reached max limit of number of pages to visit.");
-        return;
-    }
+    // if (count_of_already_visited_links >= constraints.CONCURRENT_REQUESTS) {
+    //     console.log("Reached max limit of number of pages to visit.");
+    //     return;
+    // }
 
     var nextPage = POSSIBLE_HYPERLINKS.pop();
     if (nextPage in HYPERLINKS_HARVESTED) {
@@ -74,4 +92,8 @@ function fetchingLinks($) {
         POSSIBLE_HYPERLINKS.push($(this).attr('href'));
         fs.appendFileSync('C:\\Users\\Mohit k\\WebstormProjects\\rentomojoFile.csv', ($(this).attr('href')) + '\n');
     });
+}
+
+while (concurrentEngine.status != "completed" || concurrentEngine.status != "waiting") {
+
 }
